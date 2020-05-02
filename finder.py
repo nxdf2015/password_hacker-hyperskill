@@ -1,6 +1,6 @@
 from abc import abstractmethod
-from string import ascii_lowercase
-from itertools import product,combinations
+from string import ascii_lowercase,ascii_letters
+from itertools import product,combinations,cycle
 from functools import reduce
 from operator import add
 
@@ -52,6 +52,8 @@ class DictionnaryPassword(Finder):
                             for j in c:
                                 copy[j] = copy[j].upper()
                             yield "".join(copy)
+
+
 
 
 

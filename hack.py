@@ -1,24 +1,27 @@
 from sys import argv,path
 import sys
-
-from client import Client
+path += ["C:\\Users\\nique\\PycharmProjects\\Password Hacker\\Password Hacker\\task\\hacking"]
+from client import Client, ClientLogin
 from finder import DictionnaryPassword,AlphabeticPassword
 
 
-domain,port = argv[1:]
-address =( domain, int(port))
-filename = ".\\hacking\\passwords.txt"
+
+
 
 def main():
-    with Client(address) as client:
-        #password.set_finder(AlphabeticPassword())
-        client.set_finder( DictionnaryPassword(filename))
+    domain,port = argv[1:]
+    address =( domain, int(port))
+    filename = ".\\hacking\\passwords.txt"
+    # with Client(address) as client:
+    #     #password.search(AlphabeticPassword())
+    #     client.set_finder( DictionnaryPassword(filename))
+    #     client.search()
+
+    with ClientLogin(address) as client:
         client.search()
 
 
+
 main()
-
-
-
 
 
