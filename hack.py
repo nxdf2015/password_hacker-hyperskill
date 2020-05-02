@@ -1,6 +1,6 @@
 from sys import argv,path
 import sys
-
+path += ["C:\\Users\\nique\\PycharmProjects\\Password Hacker\\Password Hacker\\task\\hacking"]
 from client import Client, ClientLogin
 from finder import DictionnaryPassword,AlphabeticPassword
 
