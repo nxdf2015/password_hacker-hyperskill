@@ -10,10 +10,10 @@ address =( domain, int(port))
 filename = ".\\hacking\\passwords.txt"
 
 def main():
-    with Client(address) as password:
+    with Client(address) as client:
         #password.set_finder(AlphabeticPassword())
-        password.set_finder( DictionnaryPassword(filename))
-        password.search()
+        client.set_finder( DictionnaryPassword(filename))
+        client.search()
 
 
 main()
